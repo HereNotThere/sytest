@@ -4,8 +4,6 @@ FROM ${BASE_IMAGE}
 
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
-
 # Install base dependencies that Python or Go would require
 RUN apt-get -qq update && apt-get -qq install -y \
     apt-utils \
