@@ -4,8 +4,11 @@ FROM ${BASE_IMAGE}
 
 ENV DEBIAN_FRONTEND noninteractive
 
+RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
+
 # Install base dependencies that Python or Go would require
 RUN apt-get -qq update && apt-get -qq install -y \
+    apt-utils \
     build-essential \
     eatmydata \
     git \
@@ -23,7 +26,7 @@ RUN apt-get -qq update && apt-get -qq install -y \
     rsync \
     sqlite3 \
     wget \
- && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/*
 
 # Set up the locales, as the default Debian image only has C, and PostgreSQL needs the correct locales to make a UTF-8 database
 RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
@@ -55,7 +58,7 @@ ENV PGUSER=postgres
 
 RUN for ver in `ls /usr/lib/postgresql | head -n 1`; do \
     su postgres -c '/usr/lib/postgresql/'$ver'/bin/initdb -E "UTF-8" --lc-collate="C" --lc-ctype="C" --username=postgres'; \
-done
+    done
 
 # configure it not to try to listen on IPv6 (it won't work and will cause warnings)
 RUN echo "listen_addresses = '127.0.0.1'" >> "$PGDATA/postgresql.conf"
